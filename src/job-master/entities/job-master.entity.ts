@@ -1,3 +1,4 @@
+import { Company } from 'src/company/entities/company.entity';
 import { Profile } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -18,10 +19,16 @@ export class JobMaster {
   @ManyToOne(() => Profile, (profile) => profile.jobs, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    nullable: true,
   })
   @JoinColumn({ name: 'profile_id' })
   profile: Profile;
+
+  @ManyToOne(() => Company, (company) => company.jobs, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'company_id' })
+  company: Company;
 
   @Column({ type: 'varchar', length: 100, comment: 'Department' })
   department: string;

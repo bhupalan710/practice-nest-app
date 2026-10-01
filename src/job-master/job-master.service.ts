@@ -11,14 +11,22 @@ export class JobMasterService {
     @InjectRepository(JobMaster) private jobMasterRepo: Repository<JobMaster>,
   ) {}
   async create(createJobMasterDto: CreateJobMasterDto) {
-    if (!createJobMasterDto.status) return 'Status cannot be false for create';
-    const existingJob = await this.jobMasterRepo.findOneBy({
-      job_title: createJobMasterDto.job_title,
-    });
-    if (existingJob) return 'Job already exists';
-    const job = await this.jobMasterRepo.create(createJobMasterDto);
-    const result = await this.jobMasterRepo.save(job);
-    return 'Job created successfully';
+    try {
+      if (!createJobMasterDto.status)
+        return 'Status cannot be false for create';
+      const existingJob = await this.jobMasterRepo.findOneBy({
+        job_title: createJobMasterDto.job_title,
+      });
+      if (existingJob) return 'Job already exists';
+      const job = await this.jobMasterRepo.create(createJobMasterDto);
+      const result = await this.jobMasterRepo.save(job);
+
+      if (!result) return 'Failed to create job';
+
+      return 'Job created successfully';
+    } catch (error) {
+      throw `Failed to create job: ${error}`;
+    }
   }
 
   async findAll() {
